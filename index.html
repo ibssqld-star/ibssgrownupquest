@@ -2813,9 +2813,9 @@ async function runDash(th){if(!th||busy||modalOpen())return;busy=true;let r;try{
 var dashT=0;
 function promptOk(){return(S.promptGate||0)<=Date.now()}
 function gatePrompt(){S.promptGate=Date.now()+(45+Math.random()*35)*1000;save()}
-setInterval(()=>{if(MAP!==MAPS.town||busy||modalOpen()||!$('#dialog').hidden||!ME.first||(typeof tutActive==='function'&&tutActive())||P.path.length||S.tidy||true){dashT=0;return}dashT+=2;if(dashT<8)return;
+setInterval(()=>{if(MAP!==MAPS.town||busy||modalOpen()||!$('#dialog').hidden||!ME.first||(typeof tutActive==='function'&&tutActive())||P.path.length||S.tidy){dashT=0;return}dashT+=2;if(dashT<20)return;
  S.runs=S.runs||{};if((S.runSnooze||0)>Date.now()||!promptOk())return;const done=dashMs(),th=DASH.find((d,j)=>j<done&&!S.runs[d.id]);if(!th)return;dashT=0;gatePrompt();
- (async()=>{busy=true;P.path=[];try{HELD.clear();held=null}catch(e){}let ok;try{ok=await inviteCard({kicker:'Dash challenge!',title:th.title,sub:esc(th.sub),col:th.col,yes:'Let\'s go!',no:'Not now'})}finally{busy=false}if(ok)runDash(th);else{S.runSnooze=Date.now()+180000;save()}})()},2000);
+ (async()=>{busy=true;P.path=[];try{HELD.clear();held=null}catch(e){}let ok;try{ok=await inviteCard({kicker:'Dash challenge!',title:th.title,sub:esc(th.sub),col:th.col,yes:'Let\'s go!',no:'Not now'})}finally{busy=false}if(ok)runDash(th);else{S.runSnooze=Date.now()+300000;save()}})()},2000);
 
 /* ---------- everyday pet errands: recurring, only if the player has a pet ---------- */
 var PETN=()=>({1:'Your dog',2:'Your cat',3:'Your bunny'}[S.look&&S.look.pet]||'Your pet');
@@ -2901,7 +2901,9 @@ setInterval(()=>{if(busy||modalOpen()||!$('#dialog').hidden||!ME.first||(typeof 
   S.tidySnooze=Date.now()+(300+Math.random()*240)*1000;save();if(!ok)return;
   if(MAP===MAPS.home&&!S.visit)return startTidy();
   chat('Better go home and sort it out.','sys');PE={kind:'room',onArrive:startTidy,until:Date.now()+90000};routeTo({n:'Home',b:'home'});renderRouteChip()})()},2000);
-{const _rp3=renderPane;renderPane=function(){_rp3()}}
+{const _rp3=renderPane;renderPane=function(){_rp3();const p=$('#pane');if(!p||tab!=='quest')return;const av=DASH.filter((d,j)=>j<Math.max(1,dashMs())),won=DASH.filter(d=>(S.runs||{})[d.id]===2).length;
+ p.insertAdjacentHTML('beforeend','<div class="qblock"><div class="qhead"><h2>Dash challenges</h2></div><p class="qnote" style="margin:0 0 8px">Quick races that pop up now and then. '+won+' of '+DASH.length+' won.</p><div class="dash-list">'+av.map(d=>'<button class="tog" data-dash="'+d.id+'">'+esc(d.title)+((S.runs||{})[d.id]===2?' \u2713':'')+'</button>').join('')+'</div></div>');
+ p.querySelectorAll('[data-dash]').forEach(b=>b.onclick=()=>runDash(DASH.find(d=>d.id===b.dataset.dash)))}}
 
 /* ---------- make pop-ups obvious ---------- */
 function inviteCard(o){return new Promise(res=>{tone([523,784,1046],.09);try{navigator.vibrate&&navigator.vibrate([80,60,80])}catch(e){}
