@@ -404,6 +404,25 @@ input:focus,select:focus{border-color:#3DBE6A;outline:none}
 @media (prefers-reduced-motion:reduce){.tut-hi{animation:none;box-shadow:0 0 0 4px #FFC247}}
 #helpBtn{width:44px;padding:0;font-size:1.2em}
 .help-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:8px 0}
+.pb-dot{position:absolute;top:-6px;right:-6px;background:#D8453A;color:#fff;font-size:11px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;font-family:var(--px)}
+@keyframes phbuzz{0%,100%{transform:rotate(0)}20%{transform:rotate(-8deg)}40%{transform:rotate(7deg)}60%{transform:rotate(-5deg)}80%{transform:rotate(4deg)}}
+.mapbtn.buzz{animation:phbuzz .5s ease-in-out 2}
+.ph-modal .mbox,.mbox.ph-modal{padding:0;overflow:hidden;width:min(360px,100%);background:#1b1b1f;border-radius:32px;border:6px solid #111}
+.ph-frame{display:flex;flex-direction:column;height:min(70vh,560px);background:#EFE9DD;color:#2E2A3A}
+.ph-top{background:#3A3F55;color:#fff;font-family:var(--px);font-weight:700;font-size:1.05em;padding:14px 16px;display:flex;align-items:center;gap:8px}
+.ph-back{background:none;border:none;color:#fff;font-size:1.6em;line-height:1;cursor:pointer;padding:0 4px 0 0}
+.ph-list{flex:1;overflow-y:auto;padding:6px}
+.ph-c{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;background:#fff;border:none;border-bottom:1px solid #E3D8C4;padding:10px 14px;font:inherit;cursor:pointer;color:#2E2A3A}
+.ph-name{font-weight:700}.ph-name i{font-style:normal;color:#3DBE6A;font-weight:600;font-size:.85em}.ph-name i:last-child{color:#9AA4AD}
+.ph-prev{color:#6B6478;font-size:.88em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.ph-badge{position:absolute;top:8px;right:12px;background:#D8453A;color:#fff;font-size:11px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.ph-convo{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:6px}
+.ph-bub{max-width:78%;background:#fff;border-radius:14px;padding:8px 12px;font-size:.95em;align-self:flex-start}
+.ph-bub.me{background:#3A8DFF;color:#fff;align-self:flex-end}
+.ph-send{display:flex;gap:8px;padding:10px;background:#E3D8C4}
+.ph-send input{flex:1;min-height:40px;border-radius:999px;border:none;padding:0 14px;font:inherit}
+.ph-send button{min-height:40px;border-radius:999px;border:none;background:#3A8DFF;color:#fff;font-weight:700;padding:0 16px;cursor:pointer}
+.ph-send button:disabled,.ph-send input:disabled{opacity:.5}
 .help-i{background:#FBF7F0;border-radius:14px;padding:10px 12px}.help-i p{margin:4px 0 0!important;font-size:.95em}
 @media (max-width:600px){.coach{font-size:.92em;padding:10px 12px}#mini{bottom:auto;top:auto}}
 
@@ -486,7 +505,7 @@ input:focus,select:focus{border-color:#3DBE6A;outline:none}
     <div class="frame">
       <div class="viewport" id="vp">
         <canvas id="game" aria-label="Game world. Tap to walk, tap people to talk."></canvas>
-        <div class="nextbar"><div id="nextText">Next: …</div></div><div class="mapbtns"><button id="routeChip" class="rchip" hidden></button><button id="mapBtn" class="mapbtn">Map</button><div class="zoombtns"><button id="zOut" class="mapbtn" aria-label="Zoom out">−</button><button id="zIn" class="mapbtn" aria-label="Zoom in">+</button></div><button id="calcBtn" class="mapbtn">Calculator</button><button id="photoBtn" class="mapbtn">Photo</button><button id="helpBtn" class="mapbtn" aria-label="How to play">?</button></div>
+        <div class="nextbar"><div id="nextText">Next: …</div></div><div class="mapbtns"><button id="routeChip" class="rchip" hidden></button><button id="mapBtn" class="mapbtn">Map</button><div class="zoombtns"><button id="zOut" class="mapbtn" aria-label="Zoom out">−</button><button id="zIn" class="mapbtn" aria-label="Zoom in">+</button></div><button id="calcBtn" class="mapbtn">Calculator</button><button id="photoBtn" class="mapbtn">Photo</button><button id="phoneBtn" class="mapbtn" aria-label="Phone" style="position:relative">Phone</button><button id="helpBtn" class="mapbtn" aria-label="How to play">?</button></div>
         <div class="coach" id="coach" hidden aria-live="polite"></div><button class="talk-chip" id="talkChip" hidden>Someone is talking to you ↓</button><div class="fade" id="fade"></div><canvas id="mini" aria-hidden="true"></canvas><div class="dpad" id="dpad" aria-label="Move"><button data-d="up" aria-label="Up">▲</button><button data-d="left" aria-label="Left">◀</button><button data-d="right" aria-label="Right">▶</button><button data-d="down" aria-label="Down">▼</button></div><button id="runBtn" class="runbtn" aria-pressed="false">Run</button><button id="miniTog" class="minitog" hidden>−</button>
       </div>
       <div class="lower">
@@ -912,7 +931,7 @@ function ground(ch,x,y,X,Y,s){const u=s/16,h=hash(x,y);if(MAP.base&&(ch==='R'||c
   case'r':{R(X,Y,s,s,'#858BA0');if(h%4===0)R(X+(h>>4)%13*u,Y+(h>>8)%13*u,u,u,'#8E94A8');const T=MAP.t,rd=c=>c==='r';
    if(rd(T[y-1][x])&&!rd(T[y+1][x])&&(rd(T[y][x-1])||rd(T[y][x+1]))&&!(rd(T[y][x-1])&&rd(T[y][x+1])&&rd(T[y-1][x-1])&&rd(T[y-1][x+1])&&!rd(T[y-1][x])))R(X+2*u,Y-.6*u,7*u,1.2*u,'#FFFFFF');
    if(rd(T[y][x-1])&&!rd(T[y][x+1])&&rd(T[y-1][x])&&rd(T[y+1][x]))R(X-.6*u,Y+2*u,1.2*u,7*u,'#FFFFFF');break}
-  case'z':{R(X,Y,s,s,'#858BA0');const T=MAP.t,hz='rRz'.includes(T[y][x-1])&&'rRz'.includes(T[y][x+1])&&!('rRz'.includes(T[y-1][x])&&'rRz'.includes(T[y+1][x])&&T[y-1][x]!=='z'&&T[y+1][x]!=='z');
+  case'z':{R(X,Y,s,s,'#858BA0');const cAt=typeof crossAt==='function'?crossAt(x,y):null;if(cAt&&!cAt.zebra)break;const T=MAP.t,hz='rRz'.includes(T[y][x-1])&&'rRz'.includes(T[y][x+1])&&!('rRz'.includes(T[y-1][x])&&'rRz'.includes(T[y+1][x])&&T[y-1][x]!=='z'&&T[y+1][x]!=='z');
    const ver=T[y-1][x]==='z'||T[y+1][x]==='z'?true:!hz;
    if(!ver)for(let i=1;i<16;i+=4)R(X,Y+i*u,s,2*u,'#FFFFFF');else for(let i=1;i<16;i+=4)R(X+i*u,Y,2*u,s,'#FFFFFF');break}
   case'k':R(X,Y,s,s,'#F3E6CF');R(X,Y,s,u*.5,'#E8D8BC');R(X,Y,u*.5,s,'#E8D8BC');if(h%9===0)R(X+4*u,Y+4*u,8*u,8*u,'#EEDFC4');break;
@@ -1905,7 +1924,7 @@ let room=null,others=[],mySay=null;
 const DEV=(()=>{let d='';try{d=localStorage.getItem('jq-dev')||'';if(!d){d=Math.random().toString(36).slice(2,10);localStorage.setItem('jq-dev',d)}}catch(e){d=Math.random().toString(36).slice(2,10)}return d})();
 const clean=s=>String(s||'').replace(/[<>&"]/g,'').slice(0,20);
 function pub(){if(!room||!ME.first)return;const L=S.look;
- room.presence({dv:DEV,n:ME.first,l:[L.skin,L.hairC,L.style,L.shirt,L.pants||0,L.fem||0,L.top||0,L.bot||0,L.shoe||0,L.acc||0,L.hat||0,L.pet||0,L.petC||0],m:mapKey(),x:Math.round(P.tx),y:Math.round(P.ty),d:P.dir,s:mySay?mySay.i:-1,tx:mySay&&mySay.tx?mySay.tx:'',st:mySay?mySay.t:0,b:(F().finished?1:0)+(F().licFinished?1:0),srv:SERV||'',q:QUEUE?QUEUE.id:'',qt:QUEUE?QUEUE.t:0,sit:P.sit?1:0,v:S.map==='home'&&S.visit?String(S.visit).slice(0,16):'',bl:encodeBuild(curLayout()),gc:S.gc?S.gc.id+'|'+S.gc.t:'',gd:gcDone()?1:0,nz:NZ.to,nt:NZ.t,fi:typeof FI!=='undefined'&&FI?FI.to:'',ft:typeof FI!=='undefined'&&FI?FI.t:0,gr:F().graduated?1:0,fl:(S.life&&S.life.flatId)||''}).catch(()=>{})}
+ room.presence({dv:DEV,n:ME.first,l:[L.skin,L.hairC,L.style,L.shirt,L.pants||0,L.fem||0,L.top||0,L.bot||0,L.shoe||0,L.acc||0,L.hat||0,L.pet||0,L.petC||0],m:mapKey(),x:Math.round(P.tx),y:Math.round(P.ty),d:P.dir,s:mySay?mySay.i:-1,tx:mySay&&mySay.tx?mySay.tx:'',st:mySay?mySay.t:0,b:(F().finished?1:0)+(F().licFinished?1:0),srv:SERV||'',q:QUEUE?QUEUE.id:'',qt:QUEUE?QUEUE.t:0,sit:P.sit?1:0,v:S.map==='home'&&S.visit?String(S.visit).slice(0,16):'',bl:encodeBuild(curLayout()),gc:S.gc?S.gc.id+'|'+S.gc.t:'',gd:gcDone()?1:0,nz:NZ.to,nt:NZ.t,fi:typeof FI!=='undefined'&&FI?FI.to:'',ft:typeof FI!=='undefined'&&FI?FI.t:0,gr:F().graduated?1:0,fl:(S.life&&S.life.flatId)||'',mt:TXOUT.to,mid:TXOUT.id,mtx:TXOUT.text,mts:TXOUT.t}).catch(()=>{})}
 function sayPhrase(i){mySay={i,t:Date.now(),at:performance.now()};chat(`You: ${PHRASES[i]}`,'');pub();tone([700],.04)}
 function sayText(raw){const txt=String(raw||'').replace(/[<>]/g,'').trim().slice(0,60);if(!txt)return;mySay={i:-1,tx:txt,t:Date.now(),at:performance.now()};chat(`You: ${esc(txt)}`,'');pub();tone([700],.04)}
 const HOUSES=(()=>{const h=MAPS.town.buildings.find(b=>b.id==='home');return MAPS.town.buildings.filter(b=>!b.enter&&!b.sign&&/house/i.test(b.info||'')).map(b=>({b,d:Math.hypot(b.x-h.x,b.y-h.y)})).sort((a,c)=>a.d-c.d).slice(0,14).map(o=>o.b)})();
@@ -1926,6 +1945,7 @@ function syncPeers(list){const prev=new Map(others.map(o=>[o.peer,o]));const nex
   const si=Number(pr.s),st=Number(pr.st)||0,txt=typeof pr.tx==='string'?pr.tx.replace(/[<>]/g,'').slice(0,60):'';
   if(st!==o.sayT&&(txt||(si>=0&&si<PHRASES.length))){o.sayT=st;o.say=txt||PHRASES[si];o.sayAt=performance.now();if(old)chat(`<b>${esc(o.name)}</b>: ${esc(o.say)}`,'')}
   if(typeof pr.nz==='string'&&pr.nz===SID&&Number(pr.nt)&&pr.nt!==o.nzSeen){const first=o.nzSeen===undefined&&!old;o.nzSeen=pr.nt;if(!first&&Date.now()-Number(pr.nt)<20000)gotNudge(o)}
+  if(typeof pr.mt==='string'&&pr.mt===SID&&Number(pr.mid)&&pr.mid!==o.mSeen){const first=o.mSeen===undefined&&!old;o.mSeen=pr.mid;if(!first){const k=msgKey(o);S.msgs=S.msgs||{};(S.msgs[k]=S.msgs[k]||[]).push({me:false,text:String(pr.mtx||'').replace(/[<>]/g,'').slice(0,140),t:Date.now()});S.contacts=S.contacts||{};S.contacts[k]={name:o.name};save();buzzPhone(o,k)}}
   if(!old){if(!o.greeted){o.greeted=true;chat(`<b>${esc(o.name)}</b> is in town.`,'sys')}}
   if(old&&old.map!==o.map){o.rx=x;o.ry=y}
   next.push(o)});
@@ -2917,6 +2937,38 @@ function dialogNudge(){const d=$('#dialog');if(!d||d.hidden)return;d.classList.r
 $('#talkChip').onclick=()=>{const d=$('#dialog'),r=d.getBoundingClientRect();window.scrollTo({top:Math.max(0,scrollY+r.top-innerHeight*.35),behavior:'smooth'});$('#talkChip').hidden=true};
 
 var NZ={to:'',t:0},nzLast=0;
+var TXOUT={to:'',id:0,text:'',t:0};
+var phoneOpenKey=null;
+function msgKey(o){return o.peer||('name:'+profKey(o.name))}
+function lastMsgOf(k){const m=(S.msgs||{})[k];return m&&m.length?(m[m.length-1].me?'You: ':'')+m[m.length-1].text:''}
+function phoneUnreadBadge(){const btn=$('#phoneBtn');if(!btn)return;const total=Object.values(S.unread||{}).reduce((a,b)=>a+b,0);const d=btn.querySelector('.pb-dot');if(d)d.remove();if(total){const b=document.createElement('span');b.className='pb-dot';b.textContent=total>9?'9+':total;btn.appendChild(b)}}
+function buzzPhone(o,k){S.unread=S.unread||{};S.unread[k]=(S.unread[k]||0)+1;save();phoneUnreadBadge();
+ try{navigator.vibrate&&navigator.vibrate([50,40,50,40,90])}catch(e){}
+ tone([880,660],.05);
+ const btn=$('#phoneBtn');if(btn){btn.classList.remove('buzz');void btn.offsetWidth;btn.classList.add('buzz')}
+ toast(o.name+' sent you a text');
+ if(phoneOpenKey===k&&!document.getElementById('modal').hidden)phoneRenderConvo(k,{name:o.name,o})}
+function sendPhoneMsg(target,raw){const txt=String(raw||'').replace(/[<>]/g,'').trim().slice(0,140);if(!txt||!target)return;
+ TXOUT={to:target.peer,id:TXOUT.id+1,text:txt,t:Date.now()};const k=msgKey(target);S.msgs=S.msgs||{};(S.msgs[k]=S.msgs[k]||[]).push({me:true,text:txt,t:Date.now()});S.contacts=S.contacts||{};S.contacts[k]={name:target.name};save();pub();tone([700,900],.04);phoneRenderConvo(k,{name:target.name,o:target})}
+function openPhone(){if(modalOpen()||busy)return;phoneOpenKey=null;phoneRenderList()}
+function phoneRenderList(){const seen=new Set();
+ const on=others.filter(o=>o.name).map(o=>({k:msgKey(o),name:o.name,online:true,o}));on.forEach(c=>seen.add(c.k));
+ const off=Object.entries(S.contacts||{}).filter(([k])=>!seen.has(k)).map(([k,v])=>({k,name:v.name,online:false}));
+ const list=[...on,...off];
+ const box=modal('<div class="ph-frame"><div class="ph-top">Messages</div><div class="ph-list" id="phList">'+(list.length?list.map(c=>'<button class="ph-c" data-k="'+esc(c.k)+'">'+((S.unread||{})[c.k]?'<span class="ph-badge">'+S.unread[c.k]+'</span>':'')+'<span class="ph-name">'+esc(c.name||'Player')+(c.online?' <i>● online</i>':' <i>offline</i>')+'</span><span class="ph-prev">'+esc((lastMsgOf(c.k)||'No messages yet').slice(0,44))+'</span></button>').join(''):'<p class="qnote">No one to message yet. Walk up to another player in town first.</p>')+'</div><div class="btnrow"><button class="btn alt" id="phX">Close</button></div></div>');
+ box.classList.add('ph-modal');
+ box.querySelectorAll('.ph-c').forEach(b=>b.onclick=()=>{const c=list.find(c=>c.k===b.dataset.k);phoneOpenKey=c.k;S.unread=S.unread||{};delete S.unread[c.k];save();phoneUnreadBadge();phoneRenderConvo(c.k,c)});
+ $('#phX').onclick=()=>{phoneOpenKey=null;closeModal()}}
+function phoneRenderConvo(k,contact){phoneOpenKey=k;const target=(contact&&contact.o&&others.includes(contact.o))?contact.o:others.find(o=>msgKey(o)===k);
+ const nm=(contact&&contact.name)||(S.contacts&&S.contacts[k]&&S.contacts[k].name)||'Player';
+ const msgs=(S.msgs||{})[k]||[];
+ const box=modal('<div class="ph-frame"><div class="ph-top"><button class="ph-back" id="phBack" aria-label="Back">‹</button>'+esc(nm)+(target?'':' <small>(offline)</small>')+'</div><div class="ph-convo" id="phConvo">'+(msgs.length?msgs.map(m=>'<div class="ph-bub '+(m.me?'me':'')+'">'+esc(m.text)+'</div>').join(''):'<p class="qnote">Say hi!</p>')+'</div><div class="ph-send"><input id="phIn" maxlength="140" placeholder="Text message…" autocomplete="off" '+(target?'':'disabled')+'><button id="phSend" '+(target?'':'disabled')+'>Send</button></div></div>');
+ box.classList.add('ph-modal');
+ const cv=$('#phConvo');cv.scrollTop=cv.scrollHeight;
+ $('#phBack').onclick=()=>{phoneOpenKey=null;phoneRenderList()};
+ const send=()=>{const v=$('#phIn').value;if(!target)return;sendPhoneMsg(target,v);$('#phIn').value=''};
+ $('#phSend').onclick=send;
+ $('#phIn').addEventListener('keydown',e=>{if(e.key==='Enter')send()})}
 function nudge(o){const now=Date.now();if(now-nzLast<8000){toast('Wait a few seconds before nudging again.');return}nzLast=now;NZ={to:String(o.peer),t:now};pub();setTimeout(()=>{if(NZ.t===now){NZ={to:'',t:0};pub()}},6000);
  tone([300,420],.05);chat('You nudged <b>'+esc(o.name)+'</b>.','sys');const dx=o.x-P.x,dy=o.y-P.y;P.dir=Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up')}
 var nzGot=0;
@@ -3391,7 +3443,7 @@ connectRoom();
   if(k==='.'){const seg=exp.split(/[+−×÷]/).pop();if(seg.includes('.'))return;if(!seg)exp+='0'}
   if(last!==null&&exp===last&&k!=='.'){exp=''}last=null;exp+=k;show()});
  $('#calcBtn').onclick=()=>{$('#calc').hidden=!$('#calc').hidden};$('#calcX').onclick=()=>{$('#calc').hidden=true}})();
-$('#mapBtn').onclick=()=>{if(!S.seenMap){S.seenMap=1;$('#mapBtn').classList.remove('newflash');save()}openMap()};if(!S.seenMap)$('#mapBtn').classList.add('newflash');$('#photoBtn').onclick=photo;$('#miniTog').onclick=()=>setMini(!miniOff);$('#zOut').onclick=()=>setZoom(1/1.2);$('#zIn').onclick=()=>setZoom(1.2);$('#routeChip').onclick=stopRoute;
+$('#mapBtn').onclick=()=>{if(!S.seenMap){S.seenMap=1;$('#mapBtn').classList.remove('newflash');save()}openMap()};if(!S.seenMap)$('#mapBtn').classList.add('newflash');$('#photoBtn').onclick=photo;$('#phoneBtn').onclick=openPhone;$('#miniTog').onclick=()=>setMini(!miniOff);$('#zOut').onclick=()=>setZoom(1/1.2);$('#zIn').onclick=()=>setZoom(1.2);$('#routeChip').onclick=stopRoute;
 addEventListener('keydown',e=>{if((e.key==='m'||e.key==='M')&&e.target.tagName!=='INPUT'&&!modalOpen()&&$('#dialog').hidden)openMap()});
 (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>requestAnimationFrame(loop));
 })();
