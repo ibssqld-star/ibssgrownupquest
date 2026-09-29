@@ -2079,7 +2079,8 @@ function drawCityMap(c,sel,cat,only,V){const T=MAPS.town,x=c.getContext('2d'),dp
   if(pl===sel||z>=10){x.font='600 11px Arial,Helvetica,sans-serif';x.lineWidth=3;x.strokeStyle='rgba(255,255,255,.95)';x.strokeText(pl.n,X(sp.px),Y(sp.py)+r*.9);x.fillStyle='#202124';x.fillText(pl.n,X(sp.px),Y(sp.py)+r*.9)}});
  let me=null;if(MAP===MAPS.town)me=[P.fx+(P.tx-P.fx)*Math.min(1,P.t)+.5,P.fy+(P.ty-P.fy)*Math.min(1,P.t)+.5];else{const b=T.buildings.find(b=>b.id===S.curB)||T.buildings.find(b=>b.bank===S.curBank);if(b)me=[b.door[0]+.5,b.door[1]+.5]}
  if(me){const px=X(me[0]),py=Y(me[1]);x.fillStyle='rgba(26,115,232,.2)';x.beginPath();x.arc(px,py,16,0,7);x.fill();x.fillStyle='#fff';x.beginPath();x.arc(px,py,8,0,7);x.fill();x.fillStyle='#1a73e8';x.beginPath();x.arc(px,py,6,0,7);x.fill()}
- others.filter(o=>o.map==='town'&&o.name).forEach(o=>{const px=X(o.rx+.5),py=Y(o.ry+.5);x.fillStyle='#fff';x.beginPath();x.arc(px,py,7.5,0,7);x.fill();x.fillStyle='#e85d9a';x.beginPath();x.arc(px,py,6,0,7);x.fill();
+ others.filter(o=>o.map&&o.name).forEach((o,oi)=>{let px,py;if(o.map==='town'){px=X(o.rx+.5);py=Y(o.ry+.5)}else{const bm=o.map.split(':')[0],b=bm==='bank'?T.buildings.find(bb=>bb.bank===o.map.slice(5))||T.buildings.find(bb=>bb.bank):bm==='home'?T.buildings.find(bb=>bb.id==='home'):bm==='flat'?FLATB():T.buildings.find(bb=>bb.id===bm);if(!b)return;const jit=(oi%3-1)*10;px=X(b.door[0]+.5)+jit;py=Y(b.door[1]+.5)}
+  x.fillStyle='#fff';x.beginPath();x.arc(px,py,7.5,0,7);x.fill();x.fillStyle='#e85d9a';x.beginPath();x.arc(px,py,6,0,7);x.fill();
   x.font='700 9px Arial,Helvetica,sans-serif';x.fillStyle='#fff';x.textAlign='center';x.textBaseline='middle';x.fillText((o.name||'?').charAt(0).toUpperCase(),px,py+.5);
   x.font='600 10px Arial,Helvetica,sans-serif';x.lineWidth=3;x.strokeStyle='rgba(255,255,255,.95)';x.strokeText(o.name,px,py-11);x.fillStyle='#c2185b';x.fillText(o.name,px,py-11)});
  return{ox,oy,z,me}}
